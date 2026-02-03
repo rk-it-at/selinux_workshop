@@ -219,7 +219,7 @@ Keep this non-legal; emphasize that compliance frameworks typically favor MAC/SE
 
 ---
 
-# Why SELinux is useful (1/5)
+# Why SELinux is useful (1/6)
 
 - Enforces least privilege with labels and policy rules (deny by default)
 - Confines services so a compromise has limited reach
@@ -231,55 +231,67 @@ Frame SELinux as containment and damage reduction, not a silver bullet.
 
 ---
 
-# Why SELinux is useful (2/5) Impact: Critical
+# Why SELinux is useful (2/6) Impact: Critical
 
-- Log4Shell `CVE-2021-44228` (link: `https://access.redhat.com/security/cve/CVE-2021-44228`)
+- Log4Shell `CVE-2021-44228` (https://access.redhat.com/security/cve/CVE-2021-44228)
 - Critical issues often allow remote, unauthenticated arbitrary code execution
 - SELinux confines the vulnerable service, limiting the attack’s reach (e.g., sensitive files or further payloads)
-- Reference: Red Hat SELinux hardening blog (link: `https://www.redhat.com/en/blog/selinux-and-rhel-technical-exploration-security-hardening`)
+- Reference: Red Hat SELinux hardening blog (https://www.redhat.com/en/blog/selinux-and-rhel-technical-exploration-security-hardening)
 
 <!-- _notes:
-Reference: Red Hat blog on SELinux hardening impact examples.
+A critical vulnerability, such as CVE-2021-44228 (Log4Shell), often allows remote unauthenticated attackers to execute arbitrary code. SELinux can mitigate the impact by confining vulnerable services within restrictive policies, limiting the attack’s reach. For instance, if the exploited process is running under a confined SELinux domain, it may not have the privileges to access sensitive files or execute further payloads.
 -->
 
 ---
 
-# Why SELinux is useful (3/5) Impact: Important
+# Why SELinux is useful (3/6) Impact: Important
 
-- Looney Tunables `CVE-2023-4911` (link: `https://access.redhat.com/security/cve/CVE-2023-4911`)
+- Looney Tunables `CVE-2023-4911` (https://access.redhat.com/security/cve/CVE-2023-4911)
 - Important issues can enable privilege escalation after an exploit
 - SELinux policies can confine the elevated process and protect critical system components
-- Reference: Red Hat SELinux hardening blog (link: `https://www.redhat.com/en/blog/selinux-and-rhel-technical-exploration-security-hardening`)
+- Reference: Red Hat SELinux hardening blog
 
 <!-- _notes:
-Reference: Red Hat blog on SELinux hardening impact examples.
+For important CVEs, such as CVE-2023-4911 (Looney Tunables), SELinux plays a vital role in restricting the scope of privilege escalation. Even if an attacker successfully exploits a buffer overflow to gain elevated privileges, SELinux policies can confine their activities, protecting critical system components.
 -->
 
 ---
 
-# Why SELinux is useful (4/5) Impact: Moderate
+# Why SELinux is useful (4/6) Impact: Moderate
 
-- Grafana issue `CVE-2023-3128` (link: `https://access.redhat.com/security/cve/CVE-2023-3128`)
+- Grafana issue `CVE-2023-3128` (https://access.redhat.com/security/cve/CVE-2023-3128)
 - Moderate issues are often harder to exploit or require unlikely configurations
 - SELinux adds a defense layer that helps prevent escalation of impact
-- Reference: Red Hat SELinux hardening blog (link: `https://www.redhat.com/en/blog/selinux-and-rhel-technical-exploration-security-hardening`)
+- Reference: Red Hat SELinux hardening blog
 
 <!-- _notes:
-Reference: Red Hat blog on SELinux hardening impact examples.
+Moderate CVEs, like CVE-2023-3128 (Grafana issue), often rely on unlikely configurations or are difficult to exploit. SELinux policies act as an additional layer of defense, preventing such vulnerabilities from escalating into significant threats.
 -->
 
 ---
 
-# Why SELinux is useful (5/5) Impact: Low
+# Why SELinux is useful (5/6) Impact: Low
 
-- vim crash `CVE-2023-48232` (link: `https://access.redhat.com/security/cve/CVE-2023-48232`)
+- vim crash `CVE-2023-48232` (https://access.redhat.com/security/cve/CVE-2023-48232)
 - Low-severity issues usually have limited consequences
 - SELinux may not directly prevent the issue, but consistent enforcement helps contain theoretical attacks
-- Reference: Red Hat SELinux hardening blog (link: `https://www.redhat.com/en/blog/selinux-and-rhel-technical-exploration-security-hardening`)
+- Reference: Red Hat SELinux hardening blog
 
 <!-- _notes:
-Reference: Red Hat blog on SELinux hardening impact examples.
+Low-severity issues, such as CVE-2023-48232 (vim crash), usually result in minimal consequences. While SELinux may not directly prevent such issues, its consistent policy enforcement helps contain even theoretical attacks.
 -->
+
+---
+
+# Why SELinux is useful (6/6) Real-world example
+
+- Scenario: Webserver is affected by vulnerability allowing remote code execution (RCE)
+- Without SELinux: attacker can execute arbitary commands and potentially take control of the system
+- With SELinux:
+  - web server is confined to its domain (e.g. httpd_t)
+  - SELinux policy restricts access to sensitive files (e.g. /etc/shadow or /var/lib/pgsql)
+  - Network access is limited to servers expected behavior
+- Reference: Red Hat SELinux hardening blog
 
 ---
 # Chapter 2
@@ -297,6 +309,11 @@ Contrast DAC and MAC, then move into labels and types.
 - Example: `chmod 777` opens everything
 - Root can do almost anything
 
+```bash
+$ ls -l /etc/passwd
+-rw-r--r--. 1 root root 1524 Oct 28 07:13 /etc/passwd
+```
+
 <!-- _notes:
 Quick reminder; show why DAC alone is insufficient.
 -->
@@ -308,7 +325,13 @@ Quick reminder; show why DAC alone is insufficient.
 - DAC: access based on identity (uid/gid)
 - MAC: access based on labels and policy rules
 - SELinux can still deny access even if DAC allows
+- SELinux can not allow access if DAC denies it
 - Goal: limit damage when a process is compromised
+
+```bash
+$ ls -lZ /etc/passwd
+-rw-r--r--. 1 root root system_u:object_r:passwd_file_t:s0 1524 Oct 28 07:13 /etc/passwd
+```
 
 <!-- _notes:
 Emphasize MAC can deny even when DAC allows.
@@ -349,6 +372,19 @@ Point out the type field is most important for decisions.
 
 <!-- _notes:
 Explain when permissive is acceptable and why disabled is not.
+-->
+
+---
+
+# Policy types in RHEL
+
+- targeted: default, confines selected services (recommended)
+- minimum: targeted + fewer services, limited policy set
+- mls: Multi-Level Security policy (specialized environments)
+- Support: Red Hat supports targeted; minimum/MLS are typically self-supported
+
+<!-- _notes:
+Keep this brief and practical; advise targeted for most environments.
 -->
 
 ---
