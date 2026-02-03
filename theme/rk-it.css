@@ -176,3 +176,8 @@ section.footnote-only .footnote {
   font-size: 0.45em;
   color: #fff;
 }
+
+section.break-slide footer,
+section.break-slide::after {
+  display: none;
+}
