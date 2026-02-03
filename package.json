@@ -1,0 +1,12 @@
+{
+  "name": "marp-deck",
+  "private": true,
+  "scripts": {
+    "build:html": "marp slides.md --theme-set theme/rk-it.css -o dist/index.html && cp -r assets dist/",
+    "build:pdf": "marp slides.md --theme-set theme/rk-it.css --allow-local-files -o dist/slides.pdf",
+    "build": "npm run build:html && npm run build:pdf"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "latest"
+  }
+}

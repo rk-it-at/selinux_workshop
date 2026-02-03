@@ -1,0 +1,178 @@
+/*!
+ * @theme rk-it
+ * @size 16:9
+ */
+
+@import "default";
+
+:root {
+  --cm-green: #51710c;
+  --cm-blue: #0369a3;
+  --cm-orange: #a33e03;
+  --cm-purple: #8e03a3;
+  --cm-yellow: #c99c00;
+  --cm-red: #c9211e;
+  --cm-footer: #51710c;
+  --cm-text: #111111;
+  --cm-line-bg: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><line x1='2' y1='7.5' x2='98' y2='7.5' stroke='%23000000' stroke-width='0.3'/><line x1='2' y1='92.5' x2='98' y2='92.5' stroke='%23000000' stroke-width='0.3'/></svg>");
+}
+
+section {
+  font-family: "Noto Sans", "Liberation Sans", "DejaVu Sans", Arial, sans-serif;
+  color: var(--cm-text);
+  position: relative;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  background:
+    var(--cm-line-bg),
+    url("assets/bg-graphic.png") center 55% / 55% auto no-repeat,
+    url("assets/logo.png") left 0.7cm top 0.35cm / 4.8cm auto no-repeat,
+    url("assets/shape.png") right 0.1cm bottom 0.1cm / 1.9cm auto no-repeat,
+    #ffffff;
+  padding: 2.2cm 2.2cm 2.2cm 2.2cm;
+}
+
+section::before {
+  content: "";
+  position: absolute;
+  left: 0.6cm;
+  right: 0.6cm;
+  top: 1.5cm;
+  bottom: 1.1cm;
+  border-top: 0.04cm solid #000000;
+  border-bottom: 0.04cm solid #000000;
+  pointer-events: none;
+  z-index: 0;
+}
+
+h1 {
+  color: var(--cm-green);
+  font-weight: 700;
+}
+
+h2 {
+  color: var(--cm-blue);
+  font-weight: 600;
+}
+
+h3 {
+  color: var(--cm-text);
+  font-weight: 600;
+}
+
+strong {
+  color: var(--cm-green);
+}
+
+ul {
+  margin-top: 0.4em;
+}
+
+li::marker {
+  color: var(--cm-green);
+}
+
+footer {
+  position: absolute;
+  bottom: 0.25cm;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--cm-footer);
+  font-size: 0.6em;
+}
+
+section::after {
+  color: var(--cm-footer);
+  font-size: 0.6em;
+  bottom: 0.25cm;
+  left: 0.6cm;
+  right: auto;
+  content: attr(data-marpit-pagination) " / " attr(data-marpit-pagination-total);
+  z-index: 2;
+}
+
+section > * {
+  position: relative;
+  z-index: 1;
+}
+
+section.right-bg-author {
+  background:
+    var(--cm-line-bg),
+    url("assets/cmk_11.jpg") right 0.5cm center / auto calc(100% - 4cm) no-repeat,
+    url("assets/bg-graphic.png") center 55% / 55% auto no-repeat,
+    url("assets/logo.png") left 0.7cm top 0.35cm / 4.8cm auto no-repeat,
+    url("assets/shape.png") right 0.1cm bottom 0.1cm / 1.9cm auto no-repeat,
+    #ffffff;
+}
+
+section.right-bg-checkmk {
+  background:
+    var(--cm-line-bg),
+    url("assets/checkmk_overview.png") right 0.5cm center / auto calc(100% - 5cm) no-repeat,
+    url("assets/bg-graphic.png") center 55% / 55% auto no-repeat,
+    url("assets/logo.png") left 0.7cm top 0.35cm / 4.8cm auto no-repeat,
+    url("assets/shape.png") right 0.1cm bottom 0.1cm / 1.9cm auto no-repeat,
+    #ffffff;
+}
+
+section.right-bg-eda {
+  background:
+    var(--cm-line-bg),
+    url("assets/eda01.png") right 0.5cm center / auto calc(100% - 5cm) no-repeat,
+    url("assets/bg-graphic.png") center 55% / 55% auto no-repeat,
+    url("assets/logo.png") left 0.7cm top 0.35cm / 4.8cm auto no-repeat,
+    url("assets/shape.png") right 0.1cm bottom 0.1cm / 1.9cm auto no-repeat,
+    #ffffff;
+}
+
+section.right-flow {
+  background:
+    var(--cm-line-bg),
+    url("assets/flow.png") right 0.5cm center / auto calc(100% - 4cm) no-repeat,
+    url("assets/bg-graphic.png") center 55% / 55% auto no-repeat,
+    url("assets/logo.png") left 0.7cm top 0.35cm / 4.8cm auto no-repeat,
+    url("assets/shape.png") right 0.1cm bottom 0.1cm / 1.9cm auto no-repeat,
+    #ffffff;
+}
+
+section.right-bg-best-practices {
+  background:
+    var(--cm-line-bg),
+    url("assets/best_practices.png") right 0.5cm center / auto calc(100% - 4cm) no-repeat,
+    url("assets/bg-graphic.png") center 55% / 55% auto no-repeat,
+    url("assets/logo.png") left 0.7cm top 0.35cm / 4.8cm auto no-repeat,
+    url("assets/shape.png") right 0.1cm bottom 0.1cm / 1.9cm auto no-repeat,
+    #ffffff;
+}
+
+section.code-small pre,
+section.code-small pre code,
+section.code-small code {
+  font-size: 0.7em !important;
+  line-height: 1.0 !important;
+}
+
+section.footnote-only {
+  position: relative;
+  text-align: left;
+}
+
+section.footnote-only .corner-logos {
+  position: absolute;
+  inset: 0;
+  background:
+    var(--cm-line-bg),
+    url("assets/logo.png") left 0.7cm top 0.35cm / 4.8cm auto no-repeat,
+    url("assets/shape.png") right 0.1cm bottom 0.1cm / 1.9cm auto no-repeat;
+  pointer-events: none;
+  z-index: 0;
+}
+
+section.footnote-only .footnote {
+  position: absolute;
+  bottom: 1.35cm;
+  right: 0.7cm;
+  font-size: 0.45em;
+  color: #fff;
+}
