@@ -172,6 +172,20 @@ Make sure everyone can log in, become root, and confirm RHEL version and repos.
 -->
 
 ---
+
+# LAB 1: Access and baseline checks (10 min)
+
+- Install Apache:
+  ```bash
+  $ dnf install httpd
+  ```
+
+- Start and enable Apache:
+  ```bash
+  $ systemctl enable --now httpd
+  ```
+
+---
 # Chapter 1
 ## Introduction and SELinux overview
 
@@ -412,10 +426,53 @@ Introduce LAB 2: Inspect contexts (15 min) and expected outcome.
 
 # LAB 2: Inspect contexts (15 min)
 
-- Check current mode: `getenforce`
-- List file contexts: `ls -Z /var/www`
-- Inspect process contexts: `ps -eZ | head`
-- Check your user context: `id -Z`
+- Check current mode:
+  ```bash
+  $ getenforce
+  ```
+
+- Set mode to permissive (temporary):
+  ```bash
+  $ setenforce 0
+  ```
+
+- Set mode to enforcing (permanent):
+  ```bash
+  $ vi /etc/sysconfig/selinux
+  ```
+  ```
+  SELINUX=enforcing
+  ```
+  ```bash
+  setenforce 1
+  ```
+
+----
+
+# LAB 2: Inspect contexts (15 min)
+
+- List file contexts:
+  ```bash
+  $ ls -lZ /var/www
+  total 8
+  drwxr-xr-x. 2 root root system_u:object_r:httpd_sys_script_exec_t:s0 4096 Dec 12 14:18 cgi-bin
+  drwxr-xr-x. 2 root root system_u:object_r:httpd_sys_content_t:s0     4096 Dec 12 14:18 html
+  ```
+
+---
+
+# LAB 2: Inspect contexts (15 min)
+
+- Inspect process contexts:
+  ```bash
+  $ ps -efZ | grep http
+  system_u:system_r:httpd_t:s0    root       11969       1  0 08:45 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND
+  ```
+- Check your user context:
+  ```bash
+  $ id -Z
+  unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+  ```
 
 <!-- _notes:
 Give 10–12 minutes, then regroup for observations.
@@ -454,6 +511,9 @@ Transition into labeling and persistent contexts.
 - Every file has a label
 - Label determines which domains can access it
 - Label mismatch causes denials even with correct DAC perms
+
+![](assets/selinux_context.png)
+Source: https://wiki.gentoo.org/wiki/SELinux/Type_enforcement
 
 <!-- _notes:
 Reinforce labels drive access, not just permissions.
@@ -494,14 +554,52 @@ Let them break it first; troubleshooting starts here.
 
 ---
 
-# LAB 3: Commands (example)
+# LAB 3: Details
 
-- `sudo mkdir -p /srv/webroot`
-- `echo ok | sudo tee /srv/webroot/index.html`
-- `sudo cp /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak`
+- Create a new directory
+  ```bash
+  $ mkdir -p /srv/webroot
+  ```
+
+- Add a test page
+  ```bash
+  $ echo "SELinux Test" > /srv/webroot/index.html
+  ```
+
+---
+
+# LAB 3: Details
+
+- Configure httpd to use this path:
+  ```bash
+  $ cp /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
+  $ vi /etc/httpd/conf/httpd.conf
+  ```
 - Edit `DocumentRoot` and `<Directory>` to `/srv/webroot`
-- `sudo systemctl restart httpd`
-- Browse: `curl http://localhost`
+  ```
+  DocumentRoot "/srv/webroot"
+  <Directory "/srv/webroot">
+  ```
+
+---
+
+# LAB 3: Details
+
+- Restart Apache:
+  ```bash
+  $ systemctl restart httpd
+  ```
+- Browse:
+  ```bash
+  $ curl http://localhost/index.html
+  <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+  <html><head>
+  <title>403 Forbidden</title>
+  </head><body>
+  <h1>Forbidden</h1>
+  <p>You don't have permission to access this resource.</p>
+  </body></html>
+  ```
 
 <!-- _notes:
 Offer as guidance, but let them edit config themselves.
@@ -511,9 +609,55 @@ Offer as guidance, but let them edit config themselves.
 
 # LAB 3: Fix context
 
-- `sudo semanage fcontext -a -t httpd_sys_content_t '/srv/webroot(/.*)?'`
-- `sudo restorecon -Rv /srv/webroot`
-- Retry: `curl http://localhost`
+- Install SELinux Polciy Coreutils:
+  ```bash
+  $ dnf install policycoreutils
+  ```
+
+- Compare SELinux type of directories:
+  ```bash
+  $ matchpathcon /srv/webroot /var/www
+  /srv/webroot	system_u:object_r:var_t:s0
+  /var/www	system_u:object_r:httpd_sys_content_t:s0
+  ```
+
+---
+
+# LAB 3: Fix context
+
+- Set SELinux type to http_sys_content_t (temp)
+  ```bash
+  $ chcon -t httpd_sys_content_t -R /srv/webroot
+  ```
+
+- Retry curl test:
+  ```bash
+  $ curl http:/localhost/index.html
+  SELinux Test
+  ```
+
+---
+
+# LAB 3: Fix context
+
+- Set SELinux type to http_sys_content_t (permanent)
+  ```bash
+  $ semanage fcontext -a -t httpd_sys_content_t '/srv/webroot(/.*)?'
+  ```
+
+- Restore context to match permanent policy:
+  ```bash
+  $ restorecon -Rv /srv/webroot
+  ```
+
+- Test SELinux type for new files:
+  ```bash
+  $ touch /srv/webroot/test
+  $ ls -lZ /srv/webroot
+  total 4
+  -rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 13 Feb 11 08:56 index.html
+  -rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0  0 Feb 11 09:16 test
+  ```
 
 <!-- _notes:
 Show semanage + restorecon pattern.
@@ -550,9 +694,20 @@ Show where AVCs appear; mention auditd and setroubleshoot.
 
 # Interpreting an AVC message
 
+```bash
+$ grep AVC /var/log/audit/audit.log 
+type=AVC msg=audit(1770796878.691:181): avc:  denied  { getattr } for  pid=12187
+comm="httpd"
+path="/srv/webroot/index.html"
+dev="dm-0" ino=132258
+scontext=system_u:system_r:httpd_t:s0
+tcontext=unconfined_u:object_r:var_t:s0
+tclass=file permissive=0
+```
+
 - What (class): file, dir, tcp_socket
 - Source: process type (e.g., `httpd_t`)
-- Target: object type (e.g., `default_t`)
+- Target: object type (e.g., `var_t`)
 - Permission: `read`, `write`, `name_connect`, etc.
 
 <!-- _notes:
