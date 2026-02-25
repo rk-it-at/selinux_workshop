@@ -74,18 +74,18 @@ Confirm versions and packages; ask participants to verify SELinux enforcing.
 
 ---
 
-# Agenda (8 hours)
+# Agenda
 
 - 09:00-09:30 Introduction, SELinux overview
 - 09:30-10:30 DAC vs MAC, SELinux concepts
 - 10:30-10:45 Break
-- 10:45-12:00 SELinux policy, labels, and file contexts (labs)
+- 10:45-12:00 SELinux policy, labels, and file contexts
 - 12:00-13:00 Lunch
-- 13:00-14:00 Logs and troubleshooting workflow (labs)
+- 13:00-14:00 Logs and troubleshooting workflow
 - 14:00-14:15 Break
-- 14:15-15:30 Booleans and common service scenarios (labs)
-- 15:30-16:45 Web troubleshooting workshop (labs)
-- 16:45-17:00 Wrap-up, Q&A
+- 14:15-14:30 Booleans and common service scenarios
+- 14:30-15:45 Web troubleshooting workshop
+- 15:45-16:00 Wrap-up, Q&A
 
 <!-- _notes:
 Walk through timing, highlight breaks and lab-heavy afternoon.
@@ -112,10 +112,13 @@ Encourage questions and sharing errors; enforcing mode stays on.
 - Use two terminals:
   - one for commands
   - one for logs:
+
     ```bash
     $ sudo journalctl -f
     ```
+
     or
+
     ```bash
     $ sudo tail -f /var/log/audit/audit.log
     ```
@@ -126,39 +129,47 @@ Ask everyone to open a log terminal now.
 
 ---
 # Exercise
-## LAB 1: Access and baseline checks (10 min)
+## LAB 1: Access and baseline checks
 
 <!-- _notes:
 Introduce LAB 1: Access and baseline checks (10 min) and expected outcome.
 -->
 ---
 
-# LAB 1: Access and baseline checks (10 min)
+# LAB 1: Access and baseline checks
 
 - SSH into your VM
 - Switch to root:
+
   ```bash
   $ sudo -i
   ```
+
   or
+
   ```bash
   $ su -
   ```
+
 - Tail the audit log:
+
   ```bash
   $ tail -f /var/log/audit/audit.log
   ```
 
 ---
 
-# LAB 1: Access and baseline checks (10 min)
+# LAB 1: Access and baseline checks
 
 - Check RHEL version:
+
   ```bash
   $ cat /etc/redhat-release
   Red Hat Enterprise Linux release 10.1 (Coughlan)
   ```
+
 - Verify repos:
+
   ```bash
   $ dnf repolist
   repo id                               repo name
@@ -172,14 +183,16 @@ Make sure everyone can log in, become root, and confirm RHEL version and repos.
 
 ---
 
-# LAB 1: Access and baseline checks (10 min)
+# LAB 1: Access and baseline checks
 
 - Install Apache:
+
   ```bash
   $ dnf install httpd
   ```
 
 - Start and enable Apache:
+
   ```bash
   $ systemctl enable --now httpd
   ```
@@ -299,11 +312,11 @@ Low-severity issues, such as CVE-2023-48232 (vim crash), usually result in minim
 # Why SELinux is useful (6/6) Real-world example
 
 - Scenario: Webserver is affected by vulnerability allowing remote code execution (RCE)
-- Without SELinux: attacker can execute arbitary commands and potentially take control of the system
+- Without SELinux: an attacker can execute arbitrary commands and potentially take control of the system
 - With SELinux:
   - web server is confined to its domain (e.g. httpd_t)
   - SELinux policy restricts access to sensitive files (e.g. backups)
-  - Network access is limited to servers expected behavior
+  - Network access is limited to the server's expected behavior
 - Reference: Red Hat SELinux hardening blog
 
 ---
@@ -338,7 +351,7 @@ Quick reminder; show why DAC alone is insufficient.
 - DAC: access based on identity (uid/gid)
 - MAC: access based on labels and policy rules
 - SELinux can still deny access even if DAC allows
-- SELinux can not allow access if DAC denies it
+- SELinux cannot allow access if DAC denies it
 - Goal: limit damage when a process is compromised
 
 ```bash
@@ -469,14 +482,14 @@ Show one quick live example for each command before starting the lab.
 
 ---
 # Exercise
-## LAB 2: Inspect contexts (15 min)
+## LAB 2: Inspect contexts
 
 <!-- _notes:
 Introduce LAB 2: Inspect contexts (15 min) and expected outcome.
 -->
 ---
 
-# LAB 2: Inspect contexts (15 min)
+# LAB 2: Inspect contexts
 
 - Check current mode:
 
@@ -491,7 +504,7 @@ Introduce LAB 2: Inspect contexts (15 min) and expected outcome.
 
 ---
 
-# LAB 2: Inspect contexts (15 min)
+# LAB 2: Inspect contexts
 
 - Set mode to enforcing (permanent):
 
@@ -507,7 +520,7 @@ Introduce LAB 2: Inspect contexts (15 min) and expected outcome.
 
 ----
 
-# LAB 2: Inspect contexts (15 min)
+# LAB 2: Inspect contexts
 
 - List file contexts:
 
@@ -520,7 +533,7 @@ Introduce LAB 2: Inspect contexts (15 min) and expected outcome.
 
 ---
 
-# LAB 2: Inspect contexts (15 min)
+# LAB 2: Inspect contexts
 
 - Inspect process contexts:
 
@@ -585,7 +598,7 @@ Reinforce labels drive access, not just permissions.
 
 # SELinux tooling packages
 
-- `policycoreutils`: core SELinux admin tools (`restorecon`, `setenforce`, `getenforce`,...)
+- `policycoreutils`: core SELinux admin tools (`restorecon`, `setenforce`, `getenforce`, ...)
 - `policycoreutils-python-utils`: `semanage`, `audit2allow`, and other Python-based tools
 - `policycoreutils-devel`: development helpers (not required in this workshop)
 - Install (if missing):
@@ -665,7 +678,7 @@ Make the distinction: semanage defines policy mappings, it does not directly rel
   $ ls -Zd /srv/webroot /srv/webroot/index.html
   ```
 
-- Production pattern: `matchpathcon` -> `semanage fcontext` -> `restorecon` -> verify
+- Workflow: `matchpathcon` -> `semanage fcontext` -> `restorecon` -> verify
 
 <!-- _notes:
 This is the main operational pattern participants should remember for real systems.
@@ -686,14 +699,14 @@ Explain why chcon is temporary; semanage is persistent.
 ---
 
 # Exercise
-## LAB 3: Fix a mislabeled webroot (30 min)
+## LAB 3: Fix a mislabeled webroot
 
 <!-- _notes:
 Introduce LAB 3: Fix a mislabeled webroot (30 min) and expected outcome.
 -->
 ---
 
-# LAB 3: Fix a mislabeled webroot (30 min)
+# LAB 3: Fix a mislabeled webroot
 
 - Create a new directory `/srv/webroot`
 - Add a test page
@@ -753,6 +766,7 @@ Let them break it first; troubleshooting starts here.
 
   ```bash
   $ curl http://localhost/index.html
+
   <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
   <html><head>
   <title>403 Forbidden</title>
@@ -770,7 +784,7 @@ Offer as guidance, but let them edit config themselves.
 
 # LAB 3: Fix context
 
-- Install SELinux Polciy Coreutils:
+- Install SELinux policy coreutils:
 
   ```bash
   $ dnf install policycoreutils
@@ -788,7 +802,7 @@ Offer as guidance, but let them edit config themselves.
 
 # LAB 3: Fix context
 
-- Set SELinux type to http_sys_content_t (temp)
+- Set SELinux type to `httpd_sys_content_t` (temp)
 
   ```bash
   $ chcon -t httpd_sys_content_t -R /srv/webroot
@@ -797,7 +811,7 @@ Offer as guidance, but let them edit config themselves.
 - Retry curl test:
 
   ```bash
-  $ curl http:/localhost/index.html
+  $ curl http://localhost/index.html
   SELinux Test
   ```
 
@@ -805,7 +819,7 @@ Offer as guidance, but let them edit config themselves.
 
 # LAB 3: Fix context
 
-- Set SELinux type to http_sys_content_t (permanent)
+- Set SELinux type to `httpd_sys_content_t` (permanent)
 
   ```bash
   $ semanage fcontext -a -t httpd_sys_content_t '/srv/webroot(/.*)?'
@@ -977,14 +991,14 @@ Set expectations: helpful for learning and triage, but do not apply fixes blindl
 ---
 
 # Exercise
-## LAB 4: Read AVC logs (20 min)
+## LAB 4: Read AVC logs
 
 <!-- _notes:
 Introduce LAB 4: Read AVC logs (20 min) and expected outcome.
 -->
 ---
 
-# LAB 4: Read AVC logs (20 min)
+# LAB 4: Read AVC logs
 
 - Trigger a denial (from LAB 2 before fix)
 - Find it:
@@ -1045,7 +1059,7 @@ $ grep AVC /var/log/audit/audit.log | audit2allow
 allow httpd_t var_t:file getattr;
 ```
 
-- **Note: Policy from audit2allow would allow httpd_t to get attributes of all files labeled with var_t, but we want Apache to only use getattr for http_sys_content_t files!**
+- **Note: Policy from audit2allow would allow httpd_t to get attributes of all files labeled with var_t, but we want Apache to only use getattr for `httpd_sys_content_t` files!**
 
 ---
 
@@ -1074,7 +1088,7 @@ Participants asked about this often. Show the mechanics, but reinforce that labe
 - Sometimes also `myhttpd.fc` if file-context entries are part of the generated policy
 - Review the `.te` file before installing anything
 
-- **Note: Policy from audit2allow would allow httpd_t to get attributes of all files labeled with var_t, but we want Apache to only use getattr for http_sys_content_t files!**
+- **Note: Policy from audit2allow would allow httpd_t to get attributes of all files labeled with var_t, but we want Apache to only use getattr for `httpd_sys_content_t` files!**
 
 <!-- _notes:
 The key teaching point is review the generated policy source (.te), not only the binary package.
@@ -1200,6 +1214,12 @@ Use this to connect policy inspection to later boolean and PHP network-connect l
 <!-- _notes:
 Time-box the break and announce restart time.
 -->
+
+---
+
+# Chapter 5
+## SELinux booleans
+
 ---
 
 # SELinux booleans
@@ -1262,14 +1282,14 @@ Reinforce runtime vs persistent behavior again. Prefer explicit verification aft
 
 ---
 # Exercise
-## LAB 6: Boolean discovery (20 min)
+## LAB 5: Boolean discovery
 
 <!-- _notes:
-Introduce LAB 6: Boolean discovery (20 min) and expected outcome.
+Introduce LAB 5: Boolean discovery (20 min) and expected outcome.
 -->
 ---
 
-# LAB 6: Boolean discovery (20 min)
+# LAB 5: Boolean discovery
 
 - Identify a boolean that enables a needed behavior
 
@@ -1303,14 +1323,14 @@ Use this as a realistic web stack example. The boolean is relevant for TCP-to-PH
 
 ---
 # Exercise
-## LAB 7: Apache to PHP-FPM (TCP) (20 min)
+## LAB 6: Apache to PHP-FPM (TCP)
 
 <!-- _notes:
-Introduce LAB 7: Apache to PHP-FPM (TCP) (20 min) and expected outcome.
+Introduce LAB 6: Apache to PHP-FPM (TCP) (20 min) and expected outcome.
 -->
 ---
 
-# LAB 7: Apache to PHP-FPM (TCP) (20 min)
+# LAB 6: Apache to PHP-FPM (TCP)
 
 - Install and start `php-fpm`
 - Configure PHP-FPM to listen on TCP (`127.0.0.1:9000`)
@@ -1327,7 +1347,7 @@ Use a TCP listener intentionally so participants see the boolean effect clearly.
 
 ---
 
-# LAB 7: Details (PHP-FPM setup)
+# LAB 6: Details (PHP-FPM setup)
 
 - Install and start PHP-FPM:
 
@@ -1354,7 +1374,7 @@ We force TCP here for teaching purposes. Mention that default RHEL config often 
 
 ---
 
-# LAB 7: Details (Apache + test)
+# LAB 6: Details (Apache + test)
 
 - Create `/srv/webroot/index.php`:
 
@@ -1379,7 +1399,7 @@ If mod_proxy_fcgi is not loaded, note the package/module requirement. Focus is S
 
 ---
 
-# LAB 7: Details (Apache + test)
+# LAB 6: Details (Apache + test)
 
 - Test with curl:
 
@@ -1403,7 +1423,7 @@ If mod_proxy_fcgi is not loaded, note the package/module requirement. Focus is S
 
 ---
 
-# LAB 7: Details (Apache + test)
+# LAB 6: Details (Apache + test)
 
 - Set boolean as audit2allow suggests:
 
@@ -1433,14 +1453,14 @@ Explain rw label split between static and writable.
 
 ---
 # Exercise
-## LAB 9: Upload directory (25 min)
+## LAB 7: Upload directory
 
 <!-- _notes:
-Introduce LAB 9: Upload directory (25 min) and expected outcome.
+Introduce LAB 7: Upload directory (25 min) and expected outcome.
 -->
 ---
 
-# LAB 9: Upload directory (25 min)
+# LAB 7: Upload directory
 
 - Create `/srv/webroot/upload`
 - Set type: `httpd_sys_rw_content_t`
@@ -1452,7 +1472,7 @@ Warn about over-labeling; keep scope tight.
 
 ---
 
-# LAB 9: Upload directory (PHP upload test)
+# LAB 7: Upload directory (PHP upload test)
 
 - Save as `/srv/webroot/upload.php`
 - Create `/srv/webroot/upload/`
@@ -1466,7 +1486,7 @@ Warn about over-labeling; keep scope tight.
 
 ---
 
-# LAB 9: Upload directory (PHP upload test) - upload.php (1/2)
+# LAB 7: Upload directory (PHP upload test) - upload.php (1/2)
 
 ```php
 <?php
@@ -1489,7 +1509,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
 
 ---
 
-# LAB 9: Upload directory (PHP upload test) - upload.php (2/2)
+# LAB 7: Upload directory (PHP upload test) - upload.php (2/2)
 
 ```php
     } else {
@@ -1514,7 +1534,7 @@ Simple demo only. The teaching goal is the SELinux label on uploads/, not secure
 
 ---
 
-# LAB 9: Upload directory (PHP upload test)
+# LAB 7: Upload directory (PHP upload test)
 
 - Add temporary write access:
 
@@ -1523,7 +1543,7 @@ Simple demo only. The teaching goal is the SELinux label on uploads/, not secure
   ```
 
 - Retry
-- **Use semanage fcontext in an production environment for persistent changes!**
+- **Use `semanage fcontext` in a production environment for persistent changes.**
 
 ---
 
@@ -1599,18 +1619,18 @@ Point participants to the notebook and upstream docs for follow-up reading.
 
 ---
 
-# Abbreviations
+# Abbreviations (1/2)
 
-- API — Application Programming Interface
 - AVC — Access Vector Cache (denial message)
+- CIS — Center for Internet Security
+- CVE — Common Vulnerabilities and Exposures
 - DAC — Discretionary Access Control
+- DISA — Defense Information Systems Agency
+- DORA — Digital Operational Resilience Act
+- GPL — GNU General Public License
 - MAC — Mandatory Access Control
-- PHP — Hypertext Preprocessor
-- RHEL — Red Hat Enterprise Linux
-- SELinux — Security-Enhanced Linux
-- SSH — Secure Shell
-- TE — Type Enforcement
-- VM — Virtual Machine
+- MLS — Multi-Level Security
+- NSA — National Security Agency
 
 <!-- _notes:
 These match abbreviations used throughout the labs.
@@ -1618,18 +1638,56 @@ These match abbreviations used throughout the labs.
 
 ---
 
-# Terminology
+# Abbreviations (2/2)
+
+- NIS2 — Network and Information Security Directive 2 (EU)
+- PHP — Hypertext Preprocessor
+- PHP-FPM — PHP FastCGI Process Manager
+- RCE — Remote Code Execution
+- RHEL — Red Hat Enterprise Linux
+- SELinux — Security-Enhanced Linux
+- SSH — Secure Shell
+- TCP — Transmission Control Protocol
+- TE — Type Enforcement
+- VM — Virtual Machine
+
+---
+
+# Terminology (1/3)
 
 - AVC/audit log: denial records stored by auditd
 - Boolean: runtime policy toggle for common behaviors
 - Domain: type assigned to processes (e.g., `httpd_t`)
 - Enforcing/Permissive: SELinux modes with/without blocking
+- File context: SELinux label on a file or directory object
+- File-context mapping (`fcontext`): persistent path-to-type rule managed by `semanage fcontext`
 - Label: context on files, sockets, and other objects
 - Policy: rules that allow or deny type interactions
 - Relabel/restorecon: apply default contexts from policy mappings
-- Security context: label in the form `user:role:type:level`
-- Type: TE label used for access decisions
 
 <!-- _notes:
 Keep definitions brief; expand only if time permits.
 -->
+
+---
+
+# Terminology (2/3)
+
+- Security context: label in the form `user:role:type:level`
+- Type: TE label used for access decisions
+- Subject / Object: process requesting access vs target resource (file, dir, socket, port)
+- SELinux class (`tclass`): object class in the decision (e.g., `file`, `dir`, `tcp_socket`)
+- Permission: requested operation (e.g., `read`, `getattr`, `write`, `name_connect`)
+- Policy type: SELinux policy flavor (`targeted`, `minimum`, `mls`)
+
+<!-- _notes:
+These terms help participants connect AVC output, sesearch results and policy troubleshooting.
+-->
+
+---
+
+# Terminology (3/3)
+
+- Policy module: installable policy component (e.g., generated `.pp` package)
+- `.te` file: Type Enforcement policy source (human-readable rules)
+- Compiled policy: active policy loaded on the system and queried with tools like `sesearch`
