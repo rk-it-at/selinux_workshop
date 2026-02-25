@@ -21,6 +21,9 @@ section {
   font-family: "Noto Sans", "Liberation Sans", "DejaVu Sans", Arial, sans-serif;
   color: var(--cm-text);
   position: relative;
+  justify-content: flex-start !important;
+  align-content: flex-start !important;
+  place-content: flex-start !important;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
   background:
@@ -94,6 +97,14 @@ section::after {
 section > * {
   position: relative;
   z-index: 1;
+}
+
+section.chapter-slide,
+section.title-slide,
+section.exercise-slide {
+  justify-content: center !important;
+  align-content: center !important;
+  place-content: center !important;
 }
 
 section.right-bg-author {

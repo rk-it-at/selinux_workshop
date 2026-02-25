@@ -7,7 +7,8 @@ paginate: true
 footer: SELinux Workshop 03/2026
 ---
 
-# SELinux Workshop
+<!-- _class: title-slide -->
+# :closed_lock_with_key: SELinux Workshop
 ## Understand SELinux with hands-on exercises (RHEL 9/10)
 
 <!-- _notes:
@@ -17,7 +18,7 @@ Welcome the group, confirm schedule and labs, explain this is hands-on.
 ---
 
 <!-- _class: right-bg-author -->
-# About me
+# :bust_in_silhouette: About me
 
 - René Koch
 - Self-employed consultant for:
@@ -33,7 +34,7 @@ Very short intro; emphasize practical focus and RHEL background.
 ---
 
 <!-- _class: right-bg-author -->
-# About me
+# :bust_in_silhouette: About me
 
 - René Koch
   - rkoch@rk-it.at
@@ -47,7 +48,7 @@ Very short intro; emphasize practical focus and RHEL background.
 
 ---
 
-# Goals for today
+# :dart: Goals for today
 
 - Understand what SELinux is and why it exists
 - Explain DAC vs MAC with clear examples
@@ -62,7 +63,7 @@ Set expectations and remind that we will not write custom policy modules.
 
 ---
 
-# Target environment
+# :computer: Target environment
 
 - RHEL 9 or RHEL 10
 - SELinux in **enforcing** mode
@@ -74,7 +75,7 @@ Confirm versions and packages; ask participants to verify SELinux enforcing.
 
 ---
 
-# Agenda
+# :spiral_calendar: Agenda
 
 - 09:00-09:30 Introduction, SELinux overview
 - 09:30-10:30 DAC vs MAC, SELinux concepts
@@ -93,7 +94,7 @@ Walk through timing, highlight breaks and lab-heavy afternoon.
 
 ---
 
-# Ground rules
+# :triangular_flag_on_post: Ground rules
 
 - Everyone works on their own VM
 - Ask questions anytime
@@ -106,7 +107,7 @@ Encourage questions and sharing errors; enforcing mode stays on.
 
 ---
 
-# Lab setup
+# :toolbox: Lab setup
 
 - You need root access
 - Use two terminals:
@@ -128,7 +129,8 @@ Ask everyone to open a log terminal now.
 -->
 
 ---
-# Exercise
+<!-- _class: exercise-slide -->
+# :test_tube: Exercise
 ## LAB 1: Access and baseline checks
 
 <!-- _notes:
@@ -136,7 +138,7 @@ Introduce LAB 1: Access and baseline checks (10 min) and expected outcome.
 -->
 ---
 
-# LAB 1: Access and baseline checks
+# :test_tube: LAB 1: Access and baseline checks
 
 - SSH into your VM
 - Switch to root:
@@ -159,7 +161,7 @@ Introduce LAB 1: Access and baseline checks (10 min) and expected outcome.
 
 ---
 
-# LAB 1: Access and baseline checks
+# :test_tube: LAB 1: Access and baseline checks
 
 - Check RHEL version:
 
@@ -183,7 +185,7 @@ Make sure everyone can log in, become root, and confirm RHEL version and repos.
 
 ---
 
-# LAB 1: Access and baseline checks
+# :test_tube: LAB 1: Access and baseline checks
 
 - Install Apache:
 
@@ -198,7 +200,8 @@ Make sure everyone can log in, become root, and confirm RHEL version and repos.
   ```
 
 ---
-# Chapter 1
+<!-- _class: chapter-slide -->
+# :bookmark_tabs: Chapter 1
 ## Introduction and SELinux overview
 
 <!-- _notes:
@@ -207,7 +210,7 @@ Start with the motivation and high-level view of SELinux.
 
 ---
 
-# What is SELinux?
+# :shield: What is SELinux?
 
 - SELinux = Security-Enhanced Linux
 - Mandatory Access Control (MAC) on top of DAC
@@ -220,7 +223,7 @@ High-level definition and why it matters for containment.
 
 ---
 
-# History of SELinux
+# :hourglass_flowing_sand: History of SELinux
 
 - Developed by the NSA as research into MAC for Linux
 - First released to the open source community in 2000 (GPL)
@@ -233,7 +236,7 @@ Keep this short: origin, open source release, kernel integration, and default RH
 
 ---
 
-# Compliance drivers (NIS2, DORA, benchmarks)
+# :clipboard: Compliance drivers (NIS2, DORA, benchmarks)
 
 - Regulations like NIS2 and DORA push stronger security controls and auditability
 - Many hardening baselines (CIS, DISA STIGs, internal policies) recommend SELinux enforcing
@@ -245,7 +248,7 @@ Keep this non-legal; emphasize that compliance frameworks typically favor MAC/SE
 
 ---
 
-# Why SELinux is useful (1/6)
+# :lock: Why SELinux is useful (1/6)
 
 - Enforces least privilege with labels and policy rules (deny by default)
 - Confines services so a compromise has limited reach
@@ -257,7 +260,7 @@ Frame SELinux as containment and damage reduction, not a silver bullet.
 
 ---
 
-# Why SELinux is useful (2/6) Impact: Critical
+# :lock: Why SELinux is useful (2/6) Impact: Critical
 
 - Log4Shell `CVE-2021-44228` (https://access.redhat.com/security/cve/CVE-2021-44228)
 - Critical issues often allow remote, unauthenticated arbitrary code execution
@@ -270,7 +273,7 @@ A critical vulnerability, such as CVE-2021-44228 (Log4Shell), often allows remot
 
 ---
 
-# Why SELinux is useful (3/6) Impact: Important
+# :lock: Why SELinux is useful (3/6) Impact: Important
 
 - Looney Tunables `CVE-2023-4911` (https://access.redhat.com/security/cve/CVE-2023-4911)
 - Important issues can enable privilege escalation after an exploit
@@ -283,7 +286,7 @@ For important CVEs, such as CVE-2023-4911 (Looney Tunables), SELinux plays a vit
 
 ---
 
-# Why SELinux is useful (4/6) Impact: Moderate
+# :lock: Why SELinux is useful (4/6) Impact: Moderate
 
 - Grafana issue `CVE-2023-3128` (https://access.redhat.com/security/cve/CVE-2023-3128)
 - Moderate issues are often harder to exploit or require unlikely configurations
@@ -296,7 +299,7 @@ Moderate CVEs, like CVE-2023-3128 (Grafana issue), often rely on unlikely config
 
 ---
 
-# Why SELinux is useful (5/6) Impact: Low
+# :lock: Why SELinux is useful (5/6) Impact: Low
 
 - vim crash `CVE-2023-48232` (https://access.redhat.com/security/cve/CVE-2023-48232)
 - Low-severity issues usually have limited consequences
@@ -309,7 +312,7 @@ Low-severity issues, such as CVE-2023-48232 (vim crash), usually result in minim
 
 ---
 
-# Why SELinux is useful (6/6) Real-world example
+# :lock: Why SELinux is useful (6/6) Real-world example
 
 - Scenario: Webserver is affected by vulnerability allowing remote code execution (RCE)
 - Without SELinux: an attacker can execute arbitrary commands and potentially take control of the system
@@ -320,7 +323,8 @@ Low-severity issues, such as CVE-2023-48232 (vim crash), usually result in minim
 - Reference: Red Hat SELinux hardening blog
 
 ---
-# Chapter 2
+<!-- _class: chapter-slide -->
+# :bookmark_tabs: Chapter 2
 ## DAC vs MAC and SELinux concepts
 
 <!-- _notes:
@@ -328,7 +332,7 @@ Contrast DAC and MAC, then move into labels and types.
 -->
 ---
 
-# DAC recap (traditional Linux)
+# :key: DAC recap (traditional Linux)
 
 - Owner/group/other permissions
 - Discretionary: user can change permissions
@@ -346,7 +350,7 @@ Quick reminder; show why DAC alone is insufficient.
 
 ---
 
-# MAC vs DAC
+# :balance_scale: MAC vs DAC
 
 - DAC: access based on identity (uid/gid)
 - MAC: access based on labels and policy rules
@@ -365,7 +369,7 @@ Emphasize MAC can deny even when DAC allows.
 
 ---
 
-# SELinux key concepts
+# :bulb: SELinux key concepts
 
 - Subjects (processes) and objects (files, sockets)
 - Security contexts: user:role:type:level
@@ -378,7 +382,7 @@ Define subject/object/types; stress TE as core model.
 
 ---
 
-# Context examples
+# :label: Context examples
 
 - `system_u:system_r:httpd_t:s0`
 - `unconfined_u:unconfined_r:unconfined_t:s0`
@@ -390,7 +394,7 @@ Point out the type field is most important for decisions.
 
 ---
 
-# Modes
+# :gear: Modes
 
 - Enforcing: policy is applied
 - Permissive: only logs, no denial
@@ -402,7 +406,7 @@ Explain when permissive is acceptable and why disabled is not.
 
 ---
 
-# Policy types in RHEL
+# :package: Policy types in RHEL
 
 - targeted: default, confines selected services (recommended)
 - minimum: targeted + fewer services, limited policy set
@@ -415,7 +419,7 @@ Keep this brief and practical; advise targeted for most environments.
 
 ---
 
-# Tools we will use
+# :toolbox: Tools we will use
 
 - `getenforce`, `setenforce`
 - `ls -Z`, `ps -eZ`, `id -Z`
@@ -429,7 +433,7 @@ Preview the toolchain; mention we will practice each one.
 
 ---
 
-# `getenforce` and `setenforce`
+# :mag: `getenforce` and `setenforce`
 
 - `getenforce`: show current SELinux mode (`Enforcing`, `Permissive`, `Disabled`)
 - `setenforce 0`: switch to permissive mode (runtime only)
@@ -442,7 +446,7 @@ Clarify runtime vs persistent changes. Persistent mode is configured in /etc/sel
 
 ---
 
-# `-Z` option: show SELinux contexts
+# :mag_right: `-Z` option: show SELinux contexts
 
 - Many commands support `-Z` to display SELinux context labels
 - Use it to inspect files, processes, and users during troubleshooting
@@ -454,7 +458,7 @@ Participants should treat -Z output as a core troubleshooting signal.
 
 ---
 
-# `-Z` examples (`ls`, `ps`, `id`)
+# :mag_right: `-Z` examples (`ls`, `ps`, `id`)
 
 - Files: 
 
@@ -481,7 +485,8 @@ Show one quick live example for each command before starting the lab.
 -->
 
 ---
-# Exercise
+<!-- _class: exercise-slide -->
+# :test_tube: Exercise
 ## LAB 2: Inspect contexts
 
 <!-- _notes:
@@ -489,7 +494,7 @@ Introduce LAB 2: Inspect contexts (15 min) and expected outcome.
 -->
 ---
 
-# LAB 2: Inspect contexts
+# :test_tube: LAB 2: Inspect contexts
 
 - Check current mode:
 
@@ -504,7 +509,7 @@ Introduce LAB 2: Inspect contexts (15 min) and expected outcome.
 
 ---
 
-# LAB 2: Inspect contexts
+# :test_tube: LAB 2: Inspect contexts
 
 - Set mode to enforcing (permanent):
 
@@ -520,7 +525,7 @@ Introduce LAB 2: Inspect contexts (15 min) and expected outcome.
 
 ----
 
-# LAB 2: Inspect contexts
+# :test_tube: LAB 2: Inspect contexts
 
 - List file contexts:
 
@@ -533,7 +538,7 @@ Introduce LAB 2: Inspect contexts (15 min) and expected outcome.
 
 ---
 
-# LAB 2: Inspect contexts
+# :test_tube: LAB 2: Inspect contexts
 
 - Inspect process contexts:
 
@@ -555,7 +560,7 @@ Give 10–12 minutes, then regroup for observations.
 
 ---
 
-# LAB 2: Expected observations
+# :test_tube: LAB 2: Expected observations
 
 - `httpd` runs as `httpd_t`
 - web content is labeled `httpd_sys_content_t`
@@ -573,7 +578,8 @@ Verify everyone sees httpd_t and httpd_sys_content_t.
 Time-box the break and announce restart time.
 -->
 ---
-# Chapter 3
+<!-- _class: chapter-slide -->
+# :bookmark_tabs: Chapter 3
 ## Policy, labels, and file contexts
 
 <!-- _notes:
@@ -581,7 +587,7 @@ Transition into labeling and persistent contexts.
 -->
 ---
 
-# File contexts and labels
+# :file_folder: File contexts and labels
 
 - Every file has a label
 - Label determines which domains can access it
@@ -596,7 +602,7 @@ Reinforce labels drive access, not just permissions.
 
 ---
 
-# SELinux tooling packages
+# :package: SELinux tooling packages
 
 - `policycoreutils`: core SELinux admin tools (`restorecon`, `setenforce`, `getenforce`, ...)
 - `policycoreutils-python-utils`: `semanage`, `audit2allow`, and other Python-based tools
@@ -613,7 +619,7 @@ Explain the package split on RHEL. We use core plus python-utils; devel stays ou
 
 ---
 
-# Labels: `chcon` and `matchpathcon`
+# :label: Labels: `chcon` and `matchpathcon`
 
 - `chcon`: change a context immediately on a file/path (quick test, not persistent)
 - `restorecon` can overwrite `chcon` changes later
@@ -621,7 +627,7 @@ Explain the package split on RHEL. We use core plus python-utils; devel stays ou
 
 ---
 
-# Persistent labeling with `semanage`
+# :pushpin: Persistent labeling with `semanage`
 
 - `semanage` manages persistent SELinux settings (file contexts, ports, booleans, logins)
 - We will use `semanage fcontext` for custom web paths
@@ -638,7 +644,7 @@ Make the distinction: semanage defines policy mappings, it does not directly rel
 
 ---
 
-# Bonus: Where to put files?
+# :gift: Bonus: Where to put files?
 
 - Use `semanage fcontext -l` to verify where to put certain files per default
 - Example: store certificates
@@ -658,7 +664,7 @@ Make the distinction: semanage defines policy mappings, it does not directly rel
 
 ---
 
-# `semanage fcontext` + `restorecon` workflow
+# :repeat: `semanage fcontext` + `restorecon` workflow
 
 - Define persistent mapping:
 
@@ -686,7 +692,7 @@ This is the main operational pattern participants should remember for real syste
 
 ---
 
-# Changing labels the right way
+# :pencil2: Changing labels the right way
 
 - Temporary: `chcon`
 - Persistent: `semanage fcontext` + `restorecon`
@@ -698,7 +704,8 @@ Explain why chcon is temporary; semanage is persistent.
 
 ---
 
-# Exercise
+<!-- _class: exercise-slide -->
+# :test_tube: Exercise
 ## LAB 3: Fix a mislabeled webroot
 
 <!-- _notes:
@@ -706,7 +713,7 @@ Introduce LAB 3: Fix a mislabeled webroot (30 min) and expected outcome.
 -->
 ---
 
-# LAB 3: Fix a mislabeled webroot
+# :test_tube: LAB 3: Fix a mislabeled webroot
 
 - Create a new directory `/srv/webroot`
 - Add a test page
@@ -720,7 +727,7 @@ Let them break it first; troubleshooting starts here.
 
 ---
 
-# LAB 3: Details
+# :test_tube: LAB 3: Details
 
 - Create a new directory
 
@@ -736,7 +743,7 @@ Let them break it first; troubleshooting starts here.
 
 ---
 
-# LAB 3: Details
+# :test_tube: LAB 3: Details
 
 - Configure httpd to use this path:
 
@@ -754,7 +761,7 @@ Let them break it first; troubleshooting starts here.
 
 ---
 
-# LAB 3: Details
+# :test_tube: LAB 3: Details
 
 - Restart Apache:
 
@@ -782,7 +789,7 @@ Offer as guidance, but let them edit config themselves.
 
 ---
 
-# LAB 3: Fix context
+# :test_tube: LAB 3: Fix context
 
 - Install SELinux policy coreutils:
 
@@ -800,7 +807,7 @@ Offer as guidance, but let them edit config themselves.
 
 ---
 
-# LAB 3: Fix context
+# :test_tube: LAB 3: Fix context
 
 - Set SELinux type to `httpd_sys_content_t` (temp)
 
@@ -817,7 +824,7 @@ Offer as guidance, but let them edit config themselves.
 
 ---
 
-# LAB 3: Fix context
+# :test_tube: LAB 3: Fix context
 
 - Set SELinux type to `httpd_sys_content_t` (permanent)
 
@@ -853,7 +860,8 @@ Show semanage + restorecon pattern.
 Confirm return time and remind to keep terminals open.
 -->
 ---
-# Chapter 4
+<!-- _class: chapter-slide -->
+# :bookmark_tabs: Chapter 4
 ## Logs and troubleshooting workflow
 
 <!-- _notes:
@@ -861,7 +869,7 @@ Set the troubleshooting mindset before showing logs.
 -->
 ---
 
-# SELinux logging basics
+# :scroll: SELinux logging basics
 
 - Denials appear as AVC messages
 - Sources:
@@ -875,7 +883,7 @@ Show where AVCs appear; mention auditd and setroubleshoot.
 
 ---
 
-# Interpreting an AVC message
+# :mag: Interpreting an AVC message
 
 ```bash
 $ grep AVC /var/log/audit/audit.log 
@@ -899,7 +907,7 @@ Walk line by line: source, target, permission.
 
 ---
 
-# Interpreting an AVC message
+# :mag: Interpreting an AVC message
 
 ```bash
 $ ausearch -m AVC,USER_AVC -ts recent
@@ -917,7 +925,7 @@ tcontext=unconfined_u:object_r:var_t:s0 tclass=file permissive=0
 
 ---
 
-# Interpreting an AVC message
+# :mag: Interpreting an AVC message
 
 ```bash
 $ journalctl -t setroubleshoot
@@ -935,7 +943,7 @@ Feb 25 09:08:41 dev02.lan.rk-it.at setroubleshoot[6516]: SELinux is preventing /
 
 ---
 
-# Troubleshooting tools: `ausearch`
+# :wrench: Troubleshooting tools: `ausearch`
 
 - `ausearch` queries audit records from `auditd` (including SELinux AVC denials)
 - Good for filtering by message type and time range
@@ -953,7 +961,7 @@ Highlight that ausearch reads audit logs and is usually the fastest way to find 
 
 ---
 
-# Troubleshooting tools: `journalctl`
+# :wrench: Troubleshooting tools: `journalctl`
 
 - `journalctl` reads the systemd journal (system and service logs)
 - Useful for SELinux-related messages from `audit`, `setroubleshoot`, and services
@@ -972,7 +980,7 @@ Explain that journalctl complements ausearch and is often easier for broad troub
 
 ---
 
-# Troubleshooting tools: `setroubleshoot`
+# :wrench: Troubleshooting tools: `setroubleshoot`
 
 - `setroubleshoot` parses SELinux denials and provides human-readable explanations
 - It can suggest likely fixes (relabeling, booleans, package hints)
@@ -990,7 +998,8 @@ Set expectations: helpful for learning and triage, but do not apply fixes blindl
 
 ---
 
-# Exercise
+<!-- _class: exercise-slide -->
+# :test_tube: Exercise
 ## LAB 4: Read AVC logs
 
 <!-- _notes:
@@ -998,7 +1007,7 @@ Introduce LAB 4: Read AVC logs (20 min) and expected outcome.
 -->
 ---
 
-# LAB 4: Read AVC logs
+# :test_tube: LAB 4: Read AVC logs
 
 - Trigger a denial (from LAB 2 before fix)
 - Find it:
@@ -1022,7 +1031,7 @@ Have them identify source/target/perms from one AVC.
 
 ---
 
-# Troubleshooting workflow
+# :compass: Troubleshooting workflow
 
 - 1) Verify mode and context
 - 2) Check AVC logs
@@ -1035,7 +1044,7 @@ Stress label or boolean first; policy last.
 
 ---
 
-# audit2allow and why we are careful
+# :warning: audit2allow and why we are careful
 
 - `audit2allow` suggests policy changes based on logs
 - It does not know your intent
@@ -1048,7 +1057,7 @@ Position as learning tool, not production fix.
 
 ---
 
-# audit2allow and why we are careful
+# :warning: audit2allow and why we are careful
 
 - Try audit2allow for our issue:
 
@@ -1063,7 +1072,7 @@ allow httpd_t var_t:file getattr;
 
 ---
 
-# `audit2allow -M` (how custom modules are created)
+# :factory: `audit2allow -M` (how custom modules are created)
 
 - This is how a local custom policy module is commonly generated from AVC logs
 - Example command:
@@ -1081,7 +1090,7 @@ Participants asked about this often. Show the mechanics, but reinforce that labe
 
 ---
 
-# What `audit2allow -M myhttpd` generates
+# :package: What `audit2allow -M myhttpd` generates
 
 - `myhttpd.te`: Type Enforcement rules (human-readable policy source)
 - `myhttpd.pp`: compiled policy package (installable module)
@@ -1096,7 +1105,7 @@ The key teaching point is review the generated policy source (.te), not only the
 
 ---
 
-# Typical custom module workflow (demo/reference)
+# :gear: Typical custom module workflow (demo/reference)
 
 - 1. Reproduce denial and collect AVCs
 - 2. Generate module:
@@ -1120,7 +1129,7 @@ Emphasize this is an escalation path after labels, booleans, and supported setti
 
 ---
 
-# Why we usually do NOT use `audit2allow -M` first
+# :no_entry: Why we usually do NOT use `audit2allow -M` first
 
 - It builds rules from observed denials, not from your intended security design
 - It can create broad permissions that hide labeling mistakes
@@ -1133,7 +1142,7 @@ Tie this back to the httpd/var_t example shown on the previous slide.
 
 ---
 
-# How to check what `httpd_t` is allowed to do
+# :mag: How to check what `httpd_t` is allowed to do
 
 - Best method on a running RHEL system: query the compiled policy (current active policy)
 - We usually do this with `setools` tools such as `sesearch`
@@ -1151,7 +1160,7 @@ This is the bridge from AVC troubleshooting to policy inspection. Emphasize quer
 
 ---
 
-# Querying the current policy with `sesearch`
+# :mag_right: Querying the current policy with `sesearch`
 
 - Show all allow rules for `httpd_t`:
 
@@ -1173,7 +1182,7 @@ Start broad, then narrow. This mirrors how we investigate AVC denials.
 
 ---
 
-# Reading `httpd_t` policy: `.te` vs active policy
+# :book: Reading `httpd_t` policy: `.te` vs active policy
 
 - On RHEL, the active policy is compiled; you typically do not inspect a local `httpd_t.te` file directly
 - `audit2allow` generates local `.te` files for custom modules, but base policy is usually queried, not edited
@@ -1186,7 +1195,7 @@ Answer the common misconception directly: "Where is httpd_t.te?" Usually not on 
 
 ---
 
-# Practical checks for `httpd_t` (examples)
+# :white_check_mark: Practical checks for `httpd_t` (examples)
 
 - Can Apache read normal web content?
 
@@ -1217,12 +1226,13 @@ Time-box the break and announce restart time.
 
 ---
 
-# Chapter 5
+<!-- _class: chapter-slide -->
+# :bookmark_tabs: Chapter 5
 ## SELinux booleans
 
 ---
 
-# SELinux booleans
+# :left_right_arrow: SELinux booleans
 
 - Tunables for common service behaviors
 - They exist so common policy choices can be enabled/disabled without writing custom policy modules
@@ -1238,7 +1248,7 @@ Explain booleans as safe, supported toggles.
 
 ---
 
-# Boolean tools: `getsebool`
+# :wrench: Boolean tools: `getsebool`
 
 - `getsebool` displays SELinux boolean values (`on` / `off`)
 - Show one boolean:
@@ -1259,7 +1269,7 @@ Start with discovery: participants should learn to inspect before changing anyth
 
 ---
 
-# Boolean tools: `setsebool`
+# :wrench: Boolean tools: `setsebool`
 
 - `setsebool` changes SELinux booleans
 - Runtime only (until reboot):
@@ -1281,7 +1291,8 @@ Reinforce runtime vs persistent behavior again. Prefer explicit verification aft
 -->
 
 ---
-# Exercise
+<!-- _class: exercise-slide -->
+# :test_tube: Exercise
 ## LAB 5: Boolean discovery
 
 <!-- _notes:
@@ -1289,7 +1300,7 @@ Introduce LAB 5: Boolean discovery (20 min) and expected outcome.
 -->
 ---
 
-# LAB 5: Boolean discovery
+# :test_tube: LAB 5: Boolean discovery
 
 - Identify a boolean that enables a needed behavior
 
@@ -1302,7 +1313,8 @@ Let them search and discuss which boolean fits.
 -->
 
 ---
-# Chapter 6
+<!-- _class: chapter-slide -->
+# :bookmark_tabs: Chapter 6
 ## Web troubleshooting workshop
 
 <!-- _notes:
@@ -1310,7 +1322,7 @@ Move into real-world web app fixes.
 -->
 ---
 
-# Practical scenario: Apache connects to PHP-FPM (TCP)
+# :globe_with_meridians: Practical scenario: Apache connects to PHP-FPM (TCP)
 
 - Symptom: Apache cannot connect to PHP-FPM listening on `127.0.0.1:9000`
 - AVC may show `name_connect` denied for `httpd_t` on `tcp_socket`
@@ -1322,7 +1334,8 @@ Use this as a realistic web stack example. The boolean is relevant for TCP-to-PH
 -->
 
 ---
-# Exercise
+<!-- _class: exercise-slide -->
+# :test_tube: Exercise
 ## LAB 6: Apache to PHP-FPM (TCP)
 
 <!-- _notes:
@@ -1330,7 +1343,7 @@ Introduce LAB 6: Apache to PHP-FPM (TCP) (20 min) and expected outcome.
 -->
 ---
 
-# LAB 6: Apache to PHP-FPM (TCP)
+# :test_tube: LAB 6: Apache to PHP-FPM (TCP)
 
 - Install and start `php-fpm`
 - Configure PHP-FPM to listen on TCP (`127.0.0.1:9000`)
@@ -1347,7 +1360,7 @@ Use a TCP listener intentionally so participants see the boolean effect clearly.
 
 ---
 
-# LAB 6: Details (PHP-FPM setup)
+# :test_tube: LAB 6: Details (PHP-FPM setup)
 
 - Install and start PHP-FPM:
 
@@ -1374,7 +1387,7 @@ We force TCP here for teaching purposes. Mention that default RHEL config often 
 
 ---
 
-# LAB 6: Details (Apache + test)
+# :test_tube: LAB 6: Details (Apache + test)
 
 - Create `/srv/webroot/index.php`:
 
@@ -1399,7 +1412,7 @@ If mod_proxy_fcgi is not loaded, note the package/module requirement. Focus is S
 
 ---
 
-# LAB 6: Details (Apache + test)
+# :test_tube: LAB 6: Details (Apache + test)
 
 - Test with curl:
 
@@ -1423,7 +1436,7 @@ If mod_proxy_fcgi is not loaded, note the package/module requirement. Focus is S
 
 ---
 
-# LAB 6: Details (Apache + test)
+# :test_tube: LAB 6: Details (Apache + test)
 
 - Set boolean as audit2allow suggests:
 
@@ -1441,7 +1454,7 @@ If mod_proxy_fcgi is not loaded, note the package/module requirement. Focus is S
 
 ---
 
-# Practical scenario: Custom webroot with uploads
+# :open_file_folder: Practical scenario: Custom webroot with uploads
 
 - Separate static vs writable content
 - Writable content must be labeled correctly
@@ -1452,7 +1465,8 @@ Explain rw label split between static and writable.
 -->
 
 ---
-# Exercise
+<!-- _class: exercise-slide -->
+# :test_tube: Exercise
 ## LAB 7: Upload directory
 
 <!-- _notes:
@@ -1460,7 +1474,7 @@ Introduce LAB 7: Upload directory (25 min) and expected outcome.
 -->
 ---
 
-# LAB 7: Upload directory
+# :test_tube: LAB 7: Upload directory
 
 - Create `/srv/webroot/upload`
 - Set type: `httpd_sys_rw_content_t`
@@ -1472,7 +1486,7 @@ Warn about over-labeling; keep scope tight.
 
 ---
 
-# LAB 7: Upload directory (PHP upload test)
+# :test_tube: LAB 7: Upload directory (PHP upload test)
 
 - Save as `/srv/webroot/upload.php`
 - Create `/srv/webroot/upload/`
@@ -1486,7 +1500,7 @@ Warn about over-labeling; keep scope tight.
 
 ---
 
-# LAB 7: Upload directory (PHP upload test) - upload.php (1/2)
+# :test_tube: LAB 7: Upload directory (PHP upload test) - upload.php (1/2)
 
 ```php
 <?php
@@ -1509,7 +1523,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
 
 ---
 
-# LAB 7: Upload directory (PHP upload test) - upload.php (2/2)
+# :test_tube: LAB 7: Upload directory (PHP upload test) - upload.php (2/2)
 
 ```php
     } else {
@@ -1534,7 +1548,7 @@ Simple demo only. The teaching goal is the SELinux label on uploads/, not secure
 
 ---
 
-# LAB 7: Upload directory (PHP upload test)
+# :test_tube: LAB 7: Upload directory (PHP upload test)
 
 - Add temporary write access:
 
@@ -1547,7 +1561,7 @@ Simple demo only. The teaching goal is the SELinux label on uploads/, not secure
 
 ---
 
-# Common mistakes
+# :warning: Common mistakes
 
 - Using `chcon` without `semanage`
 - Relabeling entire filesystem without understanding
@@ -1560,7 +1574,7 @@ Share real-world pitfalls and quick fixes.
 
 ---
 
-# Quick reference cheatsheet
+# :memo: Quick reference cheatsheet
 
 - Check mode: `getenforce`
 - Inspect labels: `ls -Z`, `ps -eZ`
@@ -1573,7 +1587,8 @@ Tell them to keep this for after class.
 -->
 
 ---
-# Chapter 7
+<!-- _class: chapter-slide -->
+# :bookmark_tabs: Chapter 7
 ## Wrap-up and Q&A
 
 <!-- _notes:
@@ -1581,7 +1596,7 @@ Summarize and invite questions.
 -->
 ---
 
-# Wrap-up
+# :white_check_mark: Wrap-up
 
 - SELinux enforces MAC on top of DAC
 - Most issues are labeling or booleans
@@ -1594,7 +1609,7 @@ Reinforce key takeaways: labels, booleans, logs.
 
 ---
 
-# Q&A
+# :speech_balloon: Q&A
 
 - What scenarios do you want to try next?
 - Ideas for advanced follow-up workshops?
@@ -1605,7 +1620,7 @@ Invite follow-up topics and advanced ideas.
 
 ---
 
-# Link list
+# :link: Link list
 
 - Linux kernel SELinux docs: https://docs.kernel.org/admin-guide/LSM/SELinux.html
 - Red Hat SELinux hardening blog: https://www.redhat.com/en/blog/selinux-and-rhel-technical-exploration-security-hardening
@@ -1619,7 +1634,7 @@ Point participants to the notebook and upstream docs for follow-up reading.
 
 ---
 
-# Abbreviations (1/2)
+# :abc: Abbreviations (1/2)
 
 - AVC — Access Vector Cache (denial message)
 - CIS — Center for Internet Security
@@ -1638,7 +1653,7 @@ These match abbreviations used throughout the labs.
 
 ---
 
-# Abbreviations (2/2)
+# :abc: Abbreviations (2/2)
 
 - NIS2 — Network and Information Security Directive 2 (EU)
 - PHP — Hypertext Preprocessor
@@ -1653,7 +1668,7 @@ These match abbreviations used throughout the labs.
 
 ---
 
-# Terminology (1/3)
+# :books: Terminology (1/3)
 
 - AVC/audit log: denial records stored by auditd
 - Boolean: runtime policy toggle for common behaviors
@@ -1671,7 +1686,7 @@ Keep definitions brief; expand only if time permits.
 
 ---
 
-# Terminology (2/3)
+# :books: Terminology (2/3)
 
 - Security context: label in the form `user:role:type:level`
 - Type: TE label used for access decisions
@@ -1686,7 +1701,7 @@ These terms help participants connect AVC output, sesearch results and policy tr
 
 ---
 
-# Terminology (3/3)
+# :books: Terminology (3/3)
 
 - Policy module: installable policy component (e.g., generated `.pp` package)
 - `.te` file: Type Enforcement policy source (human-readable rules)
