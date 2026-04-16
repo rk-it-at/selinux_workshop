@@ -664,7 +664,7 @@ Make the distinction: semanage defines policy mappings, it does not directly rel
 
 ---
 
-# :repeat: `semanage fcontext` + `restorecon` workflow
+# :repeat: `semanage fcontext` + `restorecon` flow
 
 - Define persistent mapping:
 
